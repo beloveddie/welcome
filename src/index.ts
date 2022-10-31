@@ -1,10 +1,15 @@
-import { ApolloServer, gql } from "apollo-server";
+import { ApolloServer } from "apollo-server";
 import { typeDefs } from "./schema";
-import { Query } from "./resolvers";
+import { Query, Mutation } from "./resolvers";
+import { context } from "./context";
 
-const server = new ApolloServer({ typeDefs, resolvers: { Query } });
+const server = new ApolloServer({
+  typeDefs,
+  resolvers: { Query, Mutation },
+  context: context,
+});
 
-server.listen().then(({ url }) => {
+server.listen().then(async ({ url }) => {
   console.log(`
         🚀 Server running on ${url}
     `);
