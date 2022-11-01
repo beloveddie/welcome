@@ -25,6 +25,6 @@ export const typeDefs = gql`
   type UserResponse {
     success: Boolean!
     message: String!
-    user: User
+    token: String
   }
 `;
