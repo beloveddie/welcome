@@ -19,6 +19,7 @@
     "validator": "^13.7.0"
   },
   "devDependencies": {
+    "@types/validator": "^13.7.10",
     "prisma": "^4.5.0"
   }
 }
