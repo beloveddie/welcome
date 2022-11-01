@@ -3,6 +3,7 @@ import { UserResponse } from "./signin";
 import { Context } from "./../../context";
 import validator from "validator";
 import bcrypt from "bcrypt";
+import JWT from "jsonwebtoken";
 
 interface signupInput {
   name: string;
@@ -34,8 +35,21 @@ export const signup = async (
   // hash the password
   let hashedPassword = await bcrypt.hash(password, 10);
   // create user in db
-  const user = await prisma.user.create({
-    data: { email, name, password: hashedPassword },
-  });
-  return { message: `Welcome ${name}`, success: true, token };
+  try {
+    const user = await prisma.user.create({
+      data: { email, name, password: hashedPassword },
+    });
+    const token = await JWT.sign(
+      { userId: user.id },
+      process.env.JWT_SIGNATURE!, // non-null assertion: we will always get a value. BELIEVE IN THE PROCESS!
+      { expiresIn: "24h" }
+    );
+    return { message: `Welcome ${name}`, success: true, token };
+  } catch (error) {
+    return {
+      message: "oops... something went wrong",
+      success: false,
+      token: null,
+    };
+  }
 };
