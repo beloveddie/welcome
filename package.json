@@ -20,6 +20,7 @@
     "validator": "^13.7.0"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
     "@types/validator": "^13.7.10",
     "prisma": "^4.5.0"
   }
