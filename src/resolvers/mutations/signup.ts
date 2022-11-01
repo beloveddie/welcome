@@ -17,18 +17,18 @@ export const signup = async (
 ): Promise<UserResponse> => {
   // check both input
   if (!name || !email || !password) {
-    return { message: "Invalid credentials.", success: false, user: null };
+    return { message: "Invalid credentials.", success: false, token: null };
   }
   // validate email
   if (!validator.isEmail(email)) {
-    return { message: "Incorrect email.", success: false, user: null };
+    return { message: "Incorrect email.", success: false, token: null };
   }
   // we can also check if a user already exists with the same email (we shouldn't allow such duplication)
   if (await prisma.user.findUnique({ where: { email } })) {
     return {
       message: `User with ${email} already exists.`,
       success: false,
-      user: null,
+      token: null,
     };
   }
   // hash the password
@@ -37,5 +37,5 @@ export const signup = async (
   const user = await prisma.user.create({
     data: { email, name, password: hashedPassword },
   });
-  return { message: `Welcome ${name}`, success: true, user };
+  return { message: `Welcome ${name}`, success: true, token };
 };
