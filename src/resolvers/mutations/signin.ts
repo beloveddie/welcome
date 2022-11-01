@@ -13,7 +13,7 @@ export interface User {
 export interface UserResponse {
   success: boolean;
   message: string;
-  user: User | null;
+  token: string | null;
 }
 
 export const signin = async (
@@ -24,7 +24,7 @@ export const signin = async (
   console.log(email, name, password);
 
   if (!name || !email || !password) {
-    return { message: "Invalid credentials", success: false, user: null };
+    return { message: "Invalid credentials", success: false, token: null };
   }
 
   const user = await prisma.user.create({ data: { email, name, password } });
@@ -32,6 +32,6 @@ export const signin = async (
   return {
     message: "Well-done",
     success: true,
-    user: user,
+    token: "user",
   };
 };
