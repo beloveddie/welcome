@@ -6,8 +6,8 @@ export const typeDefs = gql`
   }
 
   type Mutation {
-    signin(signinInput: UserInput!): UserResponse!
-    signup(name: String!, email: String!, password: String!): UserResponse!
+    signin(credentialInput: CredentialInput!): UserResponse!
+    signup(name: String!, credentialInput: CredentialInput!): UserResponse!
   }
 
   type User {
@@ -16,8 +16,7 @@ export const typeDefs = gql`
     email: String!
   }
 
-  input UserInput {
-    name: String
+  input CredentialInput {
     email: String!
     password: String!
   }
