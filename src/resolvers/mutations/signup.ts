@@ -7,13 +7,15 @@ import JWT from "jsonwebtoken";
 
 interface signupInput {
   name: string;
-  email: string;
-  password: string;
+  credentialInput: {
+    email: string;
+    password: string;
+  };
 }
 
 export const signup = async (
   _: any,
-  { name, email, password }: signupInput,
+  { name, credentialInput: { email, password } }: signupInput,
   { prisma }: Context
 ): Promise<UserResponse> => {
   // check both input
