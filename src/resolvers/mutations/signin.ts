@@ -1,7 +1,9 @@
 import { Context } from "./../../context";
+import bcrypt from "bcrypt";
+import JWT from "jsonwebtoken";
 
-export interface UserInput {
-  signinInput: { name: string | null; email: string; password: string };
+export interface SigninInput {
+  credentialInput: { email: string; password: string };
 }
 
 export interface User {
@@ -18,20 +20,29 @@ export interface UserResponse {
 
 export const signin = async (
   _: any,
-  { signinInput: { email, name, password } }: UserInput,
+  { credentialInput: { email, password } }: SigninInput,
   { prisma }: Context
 ): Promise<UserResponse> => {
-  console.log(email, name, password);
-
-  if (!name || !email || !password) {
-    return { message: "Invalid credentials", success: false, token: null };
+  // check for the user with the provided inputs in db
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user) {
+    return { message: "Invalid credentials.", success: false, token: null };
   }
-
-  const user = await prisma.user.create({ data: { email, name, password } });
-
+  // we check for password validity
+  const passwordIsValid = await bcrypt.compare(password, user.password);
+  if (!passwordIsValid) {
+    return {
+      message: "Invalid password.",
+      success: false,
+      token: null,
+    };
+  }
+  // all is well from here... hopefully
   return {
-    message: "Well-done",
+    message: `Dear, ${user.name}, you've been successfully signed in. Enjoy! 😊🚀`,
     success: true,
-    token: "user",
+    token: JWT.sign({ userId: user.id }, process.env.JWT_SIGNATURE!, {
+      expiresIn: "24h",
+    }),
   };
 };
